@@ -10,7 +10,7 @@ fieldDecoratorKit.setDomainList(['api.exchangerate-api.com','token.yishangcloud.
 
 fieldDecoratorKit.setDecorator({
   name: 'AI 图片编辑(Nano)',
-  // 定义捷径的i18n语言资源
+  // 定义AI 字段的i18n语言资源
   i18nMap: {
     'zh-CN': {
         'imageMethod': '模型选择',
@@ -43,7 +43,7 @@ fieldDecoratorKit.setDecorator({
         dark: ''
       }
     },
-  // 定义捷径的入参
+  // 定义AI 字段的入参
   formItems: [
     {
       key: 'imageMethod',
@@ -91,7 +91,7 @@ fieldDecoratorKit.setDecorator({
       }
     },
   ],
-  // 定义捷径的返回结果类型
+  // 定义AI 字段的返回结果类型
   resultType: {
     type: FieldType.Attachment,
   },
@@ -253,7 +253,7 @@ fieldDecoratorKit.setDecorator({
           code: FieldExecuteCode.Success, // 0 表示请求成功
           // data 类型需与下方 resultType 定义一致
           data:[{
-              fileName: "捷径异常.png",
+              fileName: "AI 字段异常.png",
               type: 'image',
               url: "http://pay.xunkecloud.cn/image/unusual.png"
             }] 
@@ -292,7 +292,7 @@ fieldDecoratorKit.setDecorator({
           code: FieldExecuteCode.Success, // 0 表示请求成功
           // data 类型需与下方 resultType 定义一致
           data:[{
-              fileName: "捷径异常.png",
+              fileName: "AI 字段异常.png",
               type: 'image',
               url: "http://pay.xunkecloud.cn/image/unusual.png"
             }] 
