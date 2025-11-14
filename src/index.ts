@@ -16,18 +16,25 @@ fieldDecoratorKit.setDecorator({
         'imageMethod': '模型选择',
         'imagePrompt': '提示词',
         'refImage': '参考图片',
-    
+        'errorTips1': 'AI 字段异常，维护中可联系开发者咨询', 
       },
       'en-US': {
         'imageMethod': 'Model selection',
         'imagePrompt': 'Image editing prompt',
-        'refImage': 'Reference image'
+        'refImage': 'Reference image',
+        'errorTips1': 'Model selection is required',
       },
       'ja-JP': {
         'imageMethod': 'モデル選択',
         'imagePrompt': '画像編集提示詞',
-        'refImage': '参考画像'
+        'refImage': '参考画像',
+        'errorTips1': 'モデル選択は必須です',
+
       },
+  },
+    errorMessages: {
+    // 定义错误信息集合
+    'error1': t('errorTips1'),
   },
   authorizations: 
     {
@@ -109,96 +116,54 @@ fieldDecoratorKit.setDecorator({
     }
     
     try {
-      const createImageUrl = (!refImage || refImage.length === 0) 
-        ? `http://token.yishangcloud.cn/v1/images/generations` 
-        : `http://token.yishangcloud.cn/v1/images/edits`;
+
+      const createImageUrl = `http://token.yishangcloud.cn/v1/images/generations` 
       
-      console.log("createImageUrl:", createImageUrl);
+      
+
+
+      // 提取图片链接函数
+      function extractImageUrls(imageData: any): string[] {
+        if (!imageData || !Array.isArray(imageData)) {
+          return [];
+        }
+        
+        const urls: string[] = [];
+        
+        imageData.forEach((item: any) => {
+          if (item.tmp_url) {
+            // 清理URL中的反引号和空格
+            const cleanUrl = item.tmp_url.replace(/[`\s]/g, '');
+            urls.push(cleanUrl);
+          }
+        });
+        
+        return urls;
+      }
 
       // 远程图片转Buffer工具函数
-      async function remoteUrlToBuffer(imageUrl: string): Promise<Buffer> {
-        return new Promise((resolve, reject) => {
-          const request = https.get(imageUrl, (response) => {
-            response.setTimeout(30000);
-            if (response.statusCode !== 200) {
-              reject(new Error(`获取图片失败：状态码 ${response.statusCode}`));
-              response.resume();
-              return;
-            }
-
-            const chunks: Buffer[] = [];
-            response.on("data", (chunk) => chunks.push(chunk));
-            response.on("end", () => {
-              const buffer = Buffer.concat(chunks);
-              const contentType = response.headers["content-type"];
-              if (!contentType?.startsWith("image/")) {
-                reject(new Error("远程资源不是图片格式"));
-                return;
-              }
-              resolve(buffer);
-            });
-          });
-
-          request.on("timeout", () => {
-            request.destroy();
-            reject(new Error("获取图片超时（30秒）"));
-          });
-
-          request.on("error", (error) => {
-            reject(new Error(`请求图片出错：${error.message}`));
-          });
-        });
-      }
+    
 
       let taskResp;
       
-      // 图片编辑/图生图处理逻辑
-      if (createImageUrl.includes('images/edits')) {
-        
-        // 获取参考图片的Buffer
-        const formData = new FormData();
-        debugLog({ message: `开始上传图片，参考图片数量: ${refImage.length}` });
-        for (let i = 0; i < refImage.length; i++) {
-          const imageBuffer = await remoteUrlToBuffer(refImage[i].tmp_url);
-          formData.append(`image`, imageBuffer, {
-            filename: `reference-${Date.now()}-${i}.webp`,
-            contentType: "image/webp",
-            knownLength: imageBuffer.length
-          });
-        }
-        formData.append("prompt", imagePrompt);
-        formData.append("model", imageMethod+"-image");
-        formData.append("response_format", "b64_json");
-        
-        // 准备请求选项
-        const editRequestOptions = {
-          method: 'POST',
-          headers: {
-            ...formData.getHeaders(),
-            "User-Agent": "PostmanRuntime/7.36.3"
-          },
-          body: formData as any,
-          timeout: 300000 // 5分钟超时
-        };
-        
-        
-        
-        taskResp = await context.fetch(createImageUrl, editRequestOptions, 'auth_id');
-      } 
-      // 文生图处理逻辑
-      else {
+    
         const jsonRequestOptions = {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
             model: imageMethod,
             "prompt": imagePrompt,
+            "image": extractImageUrls(refImage),
+            "response_format":"url"
           })
         };
         
-        console.log('jsonRequestOptions:', jsonRequestOptions);
+
+        
+      
+        
         taskResp = await context.fetch(createImageUrl, jsonRequestOptions, 'auth_id');
-      }
+      
 
       if (!taskResp) {
         throw new Error('请求未能成功发送');
@@ -246,56 +211,30 @@ fieldDecoratorKit.setDecorator({
       
     } catch (e) {
       console.log('====error', String(e));
-       if (String(e).includes('无可用渠道')) {
-        console.log(123+"=========");
-        
+      
+       if (String(e).includes('无可用渠道')) { 
         return {
-          code: FieldExecuteCode.Success, // 0 表示请求成功
-          // data 类型需与下方 resultType 定义一致
-          data:[{
-              fileName: "AI 字段异常.png",
-              type: 'image',
-              url: "http://pay.xunkecloud.cn/image/unusual.png"
-            }] 
+          code: FieldExecuteCode.Error, 
+          errorMessage: 'error1',
         };
       }
 
       // 检查错误消息中是否包含余额耗尽的信息
-      if (String(e).includes('令牌额度已用尽')) {
-        console.log(123+"=========");
+      if (String(e).includes('令牌额度已用尽')||String(e).includes('quota')) {
         
         return {
-          code: FieldExecuteCode.Success, // 0 表示请求成功
-          // data 类型需与下方 resultType 定义一致
-            data:[{
-              fileName: "余额耗尽.png",
-              type: 'image',
-              url: "http://pay.xunkecloud.cn/image/Insufficient.png"
-            }] 
+          code: FieldExecuteCode.QuotaExhausted, 
         };
       }
        if (String(e).includes('无效的令牌')) {
-        console.log(456+"=========");
         
         return {
-        code: FieldExecuteCode.Success, // 0 表示请求成功
-        data: [
-          {
-            fileName: "无效的令牌.png",
-            type: 'image',
-            url: "http://pay.xunkecloud.cn/image/tokenError.png"
-          }
-        ],
-        }
+          code: FieldExecuteCode.ConfigError, 
+        };
       }
-      return {
-          code: FieldExecuteCode.Success, // 0 表示请求成功
-          // data 类型需与下方 resultType 定义一致
-          data:[{
-              fileName: "AI 字段异常.png",
-              type: 'image',
-              url: "http://pay.xunkecloud.cn/image/unusual.png"
-            }] 
+       return {
+          code: FieldExecuteCode.Error, 
+          errorMessage: 'error1',
         };
     }
   }
