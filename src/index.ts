@@ -46,8 +46,8 @@ fieldDecoratorKit.setDecorator({
       label: '关联账号', // 授权平台，告知用户填写哪个平台的信息
       tooltips: '请配置授权', // 提示，引导用户添加授权
       icon: { // 当前平台的图标
-        light: '', 
-        dark: ''
+        light: 'https://token.yishangcloud.cn/logo1.png', 
+        dark: 'https://token.yishangcloud.cn/logo1.png'
       }
     },
   // 定义AI 字段的入参
