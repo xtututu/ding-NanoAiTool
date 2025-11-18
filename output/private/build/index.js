@@ -145,7 +145,6 @@ _dingtalkDocsCoolApp.fieldDecoratorKit.setDecorator({
               return urls;
             }; // 远程图片转Buffer工具函数
             createImageUrl = "http://token.yishangcloud.cn/v1/images/generations";
-            console.log("createImageUrl:", createImageUrl);
             jsonRequestOptions = {
               method: 'POST',
               headers: {
@@ -158,7 +157,6 @@ _dingtalkDocsCoolApp.fieldDecoratorKit.setDecorator({
                 "response_format": "url"
               })
             };
-            console.log('jsonRequestOptions:', jsonRequestOptions);
             _context.n = 2;
             return context.fetch(createImageUrl, jsonRequestOptions, 'auth_id');
           case 2:
