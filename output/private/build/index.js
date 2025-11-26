@@ -63,8 +63,8 @@ _dingtalkDocsCoolApp.fieldDecoratorKit.setDecorator({
     // 提示，引导用户添加授权
     icon: {
       // 当前平台的图标
-      light: '',
-      dark: ''
+      light: 'https://token.yishangcloud.cn/logo1.png',
+      dark: 'https://token.yishangcloud.cn/logo1.png'
     }
   },
   // 定义AI 字段的入参
@@ -78,6 +78,9 @@ _dingtalkDocsCoolApp.fieldDecoratorKit.setDecorator({
       options: [{
         key: 'nano-banana',
         title: 'nano-banana'
+      }, {
+        key: 'nano-banana-pro',
+        title: 'nano-banana-pro'
       }]
     },
     validator: {

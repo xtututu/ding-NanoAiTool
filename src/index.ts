@@ -63,6 +63,9 @@ fieldDecoratorKit.setDecorator({
           {
             key: 'nano-banana',
             title: 'nano-banana',
+          }, {
+            key: 'nano-banana-pro',
+            title: 'nano-banana-pro',
           }
         ]
       },
