@@ -1,7 +1,4 @@
 import { FieldType, fieldDecoratorKit, FormItemComponent, FieldExecuteCode, AuthorizationType } from 'dingtalk-docs-cool-app';
-import * as https from 'https';
-import FormData from 'form-data';
-import { log } from 'console';
 
 const { t } = fieldDecoratorKit;
 
