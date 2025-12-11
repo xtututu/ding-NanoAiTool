@@ -15,23 +15,28 @@ fieldDecoratorKit.setDecorator({
         'imagePrompt': '提示词',
         'refImage': '参考图片',
         'errorTips1': 'AI 字段异常，维护中可联系开发者咨询', 
+        'errorTips2': '令牌配置有误，请检查您的令牌是否正确，如仍有疑问可加入钉钉群咨询',
       },
       'en-US': {
         'imageMethod': 'Model selection',
         'imagePrompt': 'Image editing prompt',
         'refImage': 'Reference image',
         'errorTips1': 'Model selection is required',
+        'errorTips2': 'The token configuration is wrong. Please check whether your token is correct. If you still have any questions, you can join the Dingding group for consultation.',
+
       },
       'ja-JP': {
         'imageMethod': 'モデル選択',
         'imagePrompt': '画像編集提示詞',
         'refImage': '参考画像',
         'errorTips1': 'モデル選択は必須です',
+        'errorTips2': 'トークンの設定が間違っています。トークンが正しいかどうかを確認してください。まだ疑問がある場合は、DingDingグループに参加して相談してください。',
 
       },
   },
     errorMessages: {
     // 定义错误信息集合
+    'error2': t('errorTips2'),
     'error1': t('errorTips1'),
   },
   authorizations: 
@@ -171,7 +176,7 @@ fieldDecoratorKit.setDecorator({
       if (taskResp.error?.message?.includes('无效的令牌')) {
         return {
           code: FieldExecuteCode.Error,
-          errorMessage: 'error3'
+          errorMessage: 'error2'
         };
       }
 
