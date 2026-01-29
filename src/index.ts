@@ -14,6 +14,7 @@ fieldDecoratorKit.setDecorator({
         'imageMethod': '模型选择',
         'imagePrompt': '提示词',
         'refImage': '参考图片',
+        'aspectRatio': '图像比例',
         'errorTips1': 'AI 字段异常，维护中可联系开发者咨询', 
         'errorTips2': '令牌配置有误，请检查您的令牌是否正确，如仍有疑问可加入钉钉群咨询',
       },
@@ -21,6 +22,7 @@ fieldDecoratorKit.setDecorator({
         'imageMethod': 'Model selection',
         'imagePrompt': 'Image editing prompt',
         'refImage': 'Reference image',
+        'aspectRatio': 'Aspect ratio',
         'errorTips1': 'Model selection is required',
         'errorTips2': 'The token configuration is wrong. Please check whether your token is correct. If you still have any questions, you can join the Dingding group for consultation.',
 
@@ -29,6 +31,7 @@ fieldDecoratorKit.setDecorator({
         'imageMethod': 'モデル選択',
         'imagePrompt': '画像編集提示詞',
         'refImage': '参考画像',
+        'aspectRatio': '画像比',
         'errorTips1': 'モデル選択は必須です',
         'errorTips2': 'トークンの設定が間違っています。トークンが正しいかどうかを確認してください。まだ疑問がある場合は、DingDingグループに参加して相談してください。',
 
@@ -70,6 +73,10 @@ fieldDecoratorKit.setDecorator({
             key: 'nano-banana-pro',
             title: 'nano-banana-pro',
           }, {
+            key: 'nano-banana-pro_2k',
+            title: 'nano-banana-pro-2k',
+          }
+          , {
             key: 'nano-banana-pro_4k',
             title: 'nano-banana-pro-4k',
           }
@@ -86,6 +93,62 @@ fieldDecoratorKit.setDecorator({
       props: {
         mode: 'single',
         supportTypes: [FieldType.Text, FieldType.Number,FieldType.SingleSelect,FieldType.MultiSelect],
+      },
+      validator: {
+        required: true,
+      }
+    },
+    {
+      key: 'aspectRatio',
+      label: t('aspectRatio'),
+      component: FormItemComponent.SingleSelect,
+      props: {
+        defaultValue: 'auto',
+        placeholder: '请选择图像比例',
+        options: [
+          {
+            key: 'auto',
+            title: 'auto',
+          },
+          {
+            key: '1:1',
+            title: '1:1',
+          }, {
+            key: '16:9',
+            title: '16:9',
+          }, {
+            key: '9:16',
+            title: '9:16',
+          },
+          {
+            key: '4:3',
+            title: '4:3',
+          },
+          {
+            key: '3:4',
+            title: '3:4',
+          },
+          {
+            key: '3:2',
+            title: '3:2',
+          },
+          {
+            key: '2:3',
+            title: '2:3',
+          },
+          {
+            key: '5:4',
+            title: '5:4',
+          },
+          {
+            key: '4:5',
+            title: '4:5',
+          },
+          {
+            key: '21:9',
+            title: '21:9',
+          }
+        ]
       },
       validator: {
         required: true,
@@ -113,7 +176,7 @@ fieldDecoratorKit.setDecorator({
   },
   // formItemParams 为运行时传入的字段参数，对应字段配置里的 formItems （如引用的依赖字段）
   execute: async (context: any, formItemParams: any) => {
-    const { imageMethod, imagePrompt, refImage } = formItemParams;
+    const { imageMethod, imagePrompt, refImage, aspectRatio } = formItemParams;
         
      /** 为方便查看日志，使用此方法替代console.log */
     function debugLog(arg: any) {
@@ -163,9 +226,12 @@ fieldDecoratorKit.setDecorator({
             model: imageMethod,
             "prompt": imagePrompt,
             "image": extractImageUrls(refImage),
-            "response_format":"url"
+            "response_format":"url",
+            "aspectRatio": aspectRatio
           })
         };
+        
+        console.log('jsonRequestOptions:', jsonRequestOptions);
         
 
         
@@ -205,6 +271,8 @@ fieldDecoratorKit.setDecorator({
       if (!initialResult || !initialResult.data || !Array.isArray(initialResult.data) || initialResult.data.length === 0) {
         throw new Error('API响应数据格式不正确或为空');
       }
+      console.log('initialResult:', initialResult);
+      
       
       let imageUrl = initialResult.data[0].url;
       console.log('imageUrl:', imageUrl);
