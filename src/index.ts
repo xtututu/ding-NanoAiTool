@@ -287,7 +287,7 @@ fieldDecoratorKit.setDecorator({
           code: FieldExecuteCode.Success, // 0 表示请求成功
           // data 类型需与下方 resultType 定义一致
           data: [{
-            fileName: imagePrompt +'.png',
+            fileName: 'image.png',
             type: 'image',
             url: imageUrl
           }]
@@ -305,13 +305,13 @@ fieldDecoratorKit.setDecorator({
       }
 
       // 检查错误消息中是否包含余额耗尽的信息
-      if (String(e).includes('令牌额度已用尽')||String(e).includes('quota')) {
+      if (String(e).includes('令牌额度已用尽')||String(e).includes('quota')||String(e).includes('额度')) {
         
         return {
           code: FieldExecuteCode.QuotaExhausted, 
         };
       }
-       if (String(e).includes('无效的令牌')) {
+       if (String(e).includes('无效的令牌')||String(e).includes('令牌')) {
         
         return {
           code: FieldExecuteCode.ConfigError, 
