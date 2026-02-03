@@ -93,7 +93,7 @@ fieldDecoratorKit.setDecorator({
       label: t('imagePrompt'),
       component: FormItemComponent.Textarea,
       props: {
-        placeholder: '请输入',
+        placeholder: '请输入图片编辑提示词',
         enableFieldReference: true,
       },
       validator: {
